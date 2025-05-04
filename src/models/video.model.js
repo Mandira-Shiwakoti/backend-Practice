@@ -20,7 +20,7 @@ const VideoSchema =new Schema(
             type:String,
             required:true
         },
-        durtion:{
+        duration:{
             type:Number,  //cloudinary 
             required:true
         },
@@ -44,6 +44,8 @@ const VideoSchema =new Schema(
     }
 )
 
-VideoSchema.plugin(mongooseAggregatePaginate)
+
+//plugins can help to add the new methods,helpers,schemas, middleware
+VideoSchema.plugin(mongooseAggregatePaginate)  //this is the pagination plugin specifically made to work with aggregation pipelines
 
 export const Video= mongoose.model("Video",VideoSchema)

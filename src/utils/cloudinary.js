@@ -1,6 +1,6 @@
 import { v2 as cloudinary} from "cloudinary";
 
-import fs from 'fs';
+import fs from 'fs';  //it stands for the file system and it provides an API to interact with the file system on your computer or server 
 
 // Configuration
  cloudinary.config({ 
@@ -9,7 +9,7 @@ import fs from 'fs';
         api_secret: process.env.CLOUDINARY_API_SECRET
     });
 
-
+      //creating the method to handle the upload of the files system in the cloudinary 
     const uploadOnCloudinary =async(localFilePath)=>{
         try {
             if(!localFilePath) return null

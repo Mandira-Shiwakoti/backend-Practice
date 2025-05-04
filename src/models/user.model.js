@@ -19,13 +19,6 @@ const userSchema =new Schema(
             lowercase:true,
             trim:true,
         },
-        username:{
-            type:String,
-            required:true,
-            unique:true,
-            lowercase:true,
-            trim:true,
-        },
         fullname:{
             type:String,
             required:true,
@@ -41,8 +34,8 @@ const userSchema =new Schema(
         },
         watchHistory:[
             {
-                type:Schema.Types.ObjectId,
-                ref:"Video"
+                type:Schema.Types.ObjectId, //refers to the unique _id of another document in the MongoDB
+                ref:"Video"//Tells Mongoose this ObjectId refers to a document in the "Video" collection
             }
         ],
         password:{
@@ -58,15 +51,20 @@ const userSchema =new Schema(
     }
 )
 
-userSchema.pre("save", async function(next){
-    if(!this.isModified("password")) return next();
+//it is the mongoose middleware hook that runs before a user document is saved to the database 
+//this refers to the user document being saved 
 
+userSchema.pre("save", async function(next){ 
+    if(!this.isModified("password")) return next(); //if the password has not been modified(eg:when updating only email),skip hashing and call next() immediately
     this.password= await bcrypt.hash(this.password,10)
     next()
 })
 
-userSchema.methods.isPasswordCorrect= async function(password){
-      return await bcrypt.compare(password,this.password)
+//this custom method verifies whether the given password matches the user's hashed password stored in the database 
+//userschema.methods is used to define the instance methods in Mongoose 
+//password is the plain text provided by the user 
+ userSchema.methods.isPasswordCorrect= async function(password){
+      return await bcrypt.compare(password,this.password) //this.password is the hash password stored in the user document
 }
 userSchema.methods.generateAccessToken=function(){
      return jwt.sign(
@@ -76,6 +74,7 @@ userSchema.methods.generateAccessToken=function(){
             username:this.username,
             fullName:this.fullname
         },
+        // the secret key which is used to encrypt the token
         process.env.ACCESS_TOKEN_SECRET,{
             expiresIn:process.env.ACCESS_TOKEN_EXPIRY
         }

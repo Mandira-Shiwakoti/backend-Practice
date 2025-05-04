@@ -1,3 +1,6 @@
+//this defines the template for creating standarized API response objects 
+
+
 class ApiResponse{
     constructor(statusCode,data,message="Success"){
         this.statusCode=statusCode
